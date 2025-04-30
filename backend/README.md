@@ -32,9 +32,9 @@ This is the backend API for the SQL-LLM project, a natural language to SQL AI ag
    DB_USER=postgres
    DB_PASSWORD=password
    DB_NAME=sqlllm
-   
+
    OPENAI_API_KEY=your_openai_api_key
-   
+
    PORT=8080
    ```
 
@@ -59,5 +59,33 @@ This is the backend API for the SQL-LLM project, a natural language to SQL AI ag
 
 - `POST /api/query`: Submit a natural language query
 - `GET /api/schemas`: Get all available database schemas
-- `POST /api/schemas`: Upload a new database schema
+- `POST /api/schemas`: Create a new database schema
+- `POST /api/schemas/import`: Import a schema from a JSON file
 - `GET /api/history`: Get query history
+
+## Schema Import
+
+The application supports importing database schemas from JSON files. A sample schema file is provided in `docs/sample_schema.json` that you can use as a template. The schema file should have the following structure:
+
+```json
+{
+  "name": "Schema Name",
+  "description": "Schema Description",
+  "tables": [
+    {
+      "name": "table_name",
+      "description": "Table Description",
+      "columns": [
+        {
+          "name": "column_name",
+          "type": "DATA_TYPE",
+          "description": "Column Description",
+          "isPrimary": true|false,
+          "isForeign": true|false,
+          "references": "referenced_table.column" // Only required if isForeign is true
+        }
+      ]
+    }
+  ]
+}
+```

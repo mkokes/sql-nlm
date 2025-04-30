@@ -35,7 +35,7 @@ sql-llm/
 3. **Database**: SQL database (PostgreSQL)
 4. **LLM Integration**: Connect to an LLM API (like OpenAI) for natural language understanding
 5. **SQL Generation**: Convert natural language to SQL queries
-6. **Schema Management**: Store and utilize database schema information
+6. **Schema Management**: Store, import, and utilize database schema information
 
 ## Implementation Plan
 
@@ -47,6 +47,7 @@ sql-llm/
 ### Phase 2: Schema Management
 - Create schema parsing and storage
 - Implement schema metadata API
+- Add schema import functionality
 
 ### Phase 3: LLM Integration
 - Connect to LLM API

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import axios from 'axios'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
@@ -8,8 +8,9 @@ import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
-import { Plus, Loader2, Database, Calendar } from 'lucide-react'
+import { Plus, Loader2, Database, Calendar, Upload, FileUp } from 'lucide-react'
 import { useToast } from '@/hooks/use-toast'
+import { importSchema } from '@/lib/api'
 
 type Schema = {
   ID: number
@@ -39,6 +40,10 @@ export default function SchemasPage() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [showForm, setShowForm] = useState(false)
+  const [showImportDialog, setShowImportDialog] = useState(false)
+  const [importFile, setImportFile] = useState<File | null>(null)
+  const [importLoading, setImportLoading] = useState(false)
+  const fileInputRef = useRef<HTMLInputElement>(null)
   const [formData, setFormData] = useState({
     name: '',
     description: '',
@@ -196,6 +201,47 @@ export default function SchemasPage() {
     })
   }
 
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      setImportFile(e.target.files[0])
+    }
+  }
+
+  const handleImport = async () => {
+    if (!importFile) {
+      toast({
+        title: "No file selected",
+        description: "Please select a schema file to import.",
+        variant: "destructive",
+      })
+      return
+    }
+
+    try {
+      setImportLoading(true)
+      await importSchema(importFile)
+      setShowImportDialog(false)
+      setImportFile(null)
+      if (fileInputRef.current) {
+        fileInputRef.current.value = ''
+      }
+      fetchSchemas()
+      toast({
+        title: "Schema imported",
+        description: "Your database schema has been imported successfully.",
+      })
+    } catch (err) {
+      console.error(err)
+      toast({
+        title: "Error importing schema",
+        description: "There was a problem importing your schema. Please check the file format and try again.",
+        variant: "destructive",
+      })
+    } finally {
+      setImportLoading(false)
+    }
+  }
+
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
@@ -205,13 +251,67 @@ export default function SchemasPage() {
             Manage your database schemas for natural language queries.
           </p>
         </div>
-        <Dialog open={showForm} onOpenChange={setShowForm}>
-          <DialogTrigger asChild>
-            <Button className="gap-1">
-              <Plus className="h-4 w-4" />
-              Add New Schema
-            </Button>
-          </DialogTrigger>
+        <div className="flex gap-2">
+          <Dialog open={showImportDialog} onOpenChange={setShowImportDialog}>
+            <DialogTrigger asChild>
+              <Button variant="outline" className="gap-1">
+                <FileUp className="h-4 w-4" />
+                Import Schema
+              </Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Import Schema</DialogTitle>
+                <DialogDescription>
+                  Import a database schema from a JSON file.
+                </DialogDescription>
+              </DialogHeader>
+              <div className="grid gap-4 py-4">
+                <div className="grid gap-2">
+                  <label className="text-sm font-medium">
+                    Schema File (JSON)
+                  </label>
+                  <Input
+                    ref={fileInputRef}
+                    type="file"
+                    accept=".json"
+                    onChange={handleFileChange}
+                    className="cursor-pointer"
+                  />
+                  <p className="text-xs text-muted-foreground">
+                    The file should contain a valid schema definition in JSON format.
+                  </p>
+                </div>
+              </div>
+              <DialogFooter>
+                <Button type="button" variant="outline" onClick={() => setShowImportDialog(false)}>
+                  Cancel
+                </Button>
+                <Button
+                  type="button"
+                  onClick={handleImport}
+                  disabled={importLoading || !importFile}
+                >
+                  {importLoading ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Importing...
+                    </>
+                  ) : (
+                    'Import'
+                  )}
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+
+          <Dialog open={showForm} onOpenChange={setShowForm}>
+            <DialogTrigger asChild>
+              <Button className="gap-1">
+                <Plus className="h-4 w-4" />
+                Add New Schema
+              </Button>
+            </DialogTrigger>
           <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle>Create New Schema</DialogTitle>
@@ -411,14 +511,25 @@ export default function SchemasPage() {
         <Card className="text-center py-12">
           <CardContent>
             <Database className="h-12 w-12 mx-auto text-muted-foreground/60 mb-4" />
-            <p className="text-muted-foreground">No schemas found. Create one to get started.</p>
-            <Button
-              className="mt-4"
-              onClick={() => setShowForm(true)}
-              variant="outline"
-            >
-              Add New Schema
-            </Button>
+            <p className="text-muted-foreground">No schemas found. Create one or import from a file to get started.</p>
+            <div className="flex justify-center gap-2 mt-4">
+              <Button
+                onClick={() => setShowImportDialog(true)}
+                variant="outline"
+                className="gap-1"
+              >
+                <FileUp className="h-4 w-4" />
+                Import Schema
+              </Button>
+              <Button
+                onClick={() => setShowForm(true)}
+                variant="outline"
+                className="gap-1"
+              >
+                <Plus className="h-4 w-4" />
+                Add New Schema
+              </Button>
+            </div>
           </CardContent>
         </Card>
       ) : (

@@ -2,7 +2,9 @@ package schema
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
+	"io"
 
 	"github.com/marty/sql-llm/internal/database"
 	"gorm.io/gorm"
@@ -100,7 +102,7 @@ func (s *Schema) GetSchemaDescription() (string, error) {
 		if table.Description != "" {
 			description += fmt.Sprintf("Description: %s\n", table.Description)
 		}
-		
+
 		description += "Columns:\n"
 		for _, column := range table.Columns {
 			colDesc := fmt.Sprintf("- %s (%s)", column.Name, column.Type)
@@ -119,4 +121,46 @@ func (s *Schema) GetSchemaDescription() (string, error) {
 	}
 
 	return description, nil
+}
+
+// ImportSchemaFromJSON imports a schema from a JSON file
+func ImportSchemaFromJSON(r io.Reader) (*Schema, error) {
+	// Read the JSON data from the reader
+	data, err := io.ReadAll(r)
+	if err != nil {
+		return nil, fmt.Errorf("failed to read schema file: %w", err)
+	}
+
+	// Try to parse the JSON data
+	var importedSchema struct {
+		Name        string  `json:"name"`
+		Description string  `json:"description"`
+		Tables      []Table `json:"tables"`
+	}
+
+	if err := json.Unmarshal(data, &importedSchema); err != nil {
+		return nil, fmt.Errorf("failed to parse schema JSON: %w", err)
+	}
+
+	// Validate the imported schema
+	if importedSchema.Name == "" {
+		return nil, errors.New("schema name is required")
+	}
+
+	if len(importedSchema.Tables) == 0 {
+		return nil, errors.New("schema must contain at least one table")
+	}
+
+	// Create a new Schema object
+	schema := &Schema{
+		Name:        importedSchema.Name,
+		Description: importedSchema.Description,
+	}
+
+	// Set the tables
+	if err := schema.SetTables(importedSchema.Tables); err != nil {
+		return nil, fmt.Errorf("failed to set tables: %w", err)
+	}
+
+	return schema, nil
 }

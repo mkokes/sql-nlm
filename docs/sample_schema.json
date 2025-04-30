@@ -1,0 +1,195 @@
+{
+  "name": "E-commerce Database",
+  "description": "A sample e-commerce database with products, customers, and orders",
+  "tables": [
+    {
+      "name": "products",
+      "description": "Products available for sale",
+      "columns": [
+        {
+          "name": "id",
+          "type": "INTEGER",
+          "description": "Unique product identifier",
+          "isPrimary": true,
+          "isForeign": false
+        },
+        {
+          "name": "name",
+          "type": "VARCHAR(255)",
+          "description": "Product name",
+          "isPrimary": false,
+          "isForeign": false
+        },
+        {
+          "name": "description",
+          "type": "TEXT",
+          "description": "Product description",
+          "isPrimary": false,
+          "isForeign": false
+        },
+        {
+          "name": "price",
+          "type": "DECIMAL(10,2)",
+          "description": "Product price",
+          "isPrimary": false,
+          "isForeign": false
+        },
+        {
+          "name": "category_id",
+          "type": "INTEGER",
+          "description": "Category ID",
+          "isPrimary": false,
+          "isForeign": true,
+          "references": "categories.id"
+        }
+      ]
+    },
+    {
+      "name": "categories",
+      "description": "Product categories",
+      "columns": [
+        {
+          "name": "id",
+          "type": "INTEGER",
+          "description": "Unique category identifier",
+          "isPrimary": true,
+          "isForeign": false
+        },
+        {
+          "name": "name",
+          "type": "VARCHAR(100)",
+          "description": "Category name",
+          "isPrimary": false,
+          "isForeign": false
+        },
+        {
+          "name": "parent_id",
+          "type": "INTEGER",
+          "description": "Parent category ID for hierarchical categories",
+          "isPrimary": false,
+          "isForeign": true,
+          "references": "categories.id"
+        }
+      ]
+    },
+    {
+      "name": "customers",
+      "description": "Customer information",
+      "columns": [
+        {
+          "name": "id",
+          "type": "INTEGER",
+          "description": "Unique customer identifier",
+          "isPrimary": true,
+          "isForeign": false
+        },
+        {
+          "name": "email",
+          "type": "VARCHAR(255)",
+          "description": "Customer email address",
+          "isPrimary": false,
+          "isForeign": false
+        },
+        {
+          "name": "name",
+          "type": "VARCHAR(255)",
+          "description": "Customer full name",
+          "isPrimary": false,
+          "isForeign": false
+        },
+        {
+          "name": "created_at",
+          "type": "TIMESTAMP",
+          "description": "Account creation date",
+          "isPrimary": false,
+          "isForeign": false
+        }
+      ]
+    },
+    {
+      "name": "orders",
+      "description": "Customer orders",
+      "columns": [
+        {
+          "name": "id",
+          "type": "INTEGER",
+          "description": "Unique order identifier",
+          "isPrimary": true,
+          "isForeign": false
+        },
+        {
+          "name": "customer_id",
+          "type": "INTEGER",
+          "description": "Customer who placed the order",
+          "isPrimary": false,
+          "isForeign": true,
+          "references": "customers.id"
+        },
+        {
+          "name": "order_date",
+          "type": "TIMESTAMP",
+          "description": "Date and time when the order was placed",
+          "isPrimary": false,
+          "isForeign": false
+        },
+        {
+          "name": "status",
+          "type": "VARCHAR(50)",
+          "description": "Order status (pending, shipped, delivered, etc.)",
+          "isPrimary": false,
+          "isForeign": false
+        },
+        {
+          "name": "total_amount",
+          "type": "DECIMAL(10,2)",
+          "description": "Total order amount",
+          "isPrimary": false,
+          "isForeign": false
+        }
+      ]
+    },
+    {
+      "name": "order_items",
+      "description": "Items within an order",
+      "columns": [
+        {
+          "name": "id",
+          "type": "INTEGER",
+          "description": "Unique order item identifier",
+          "isPrimary": true,
+          "isForeign": false
+        },
+        {
+          "name": "order_id",
+          "type": "INTEGER",
+          "description": "Order this item belongs to",
+          "isPrimary": false,
+          "isForeign": true,
+          "references": "orders.id"
+        },
+        {
+          "name": "product_id",
+          "type": "INTEGER",
+          "description": "Product in this order item",
+          "isPrimary": false,
+          "isForeign": true,
+          "references": "products.id"
+        },
+        {
+          "name": "quantity",
+          "type": "INTEGER",
+          "description": "Quantity of the product",
+          "isPrimary": false,
+          "isForeign": false
+        },
+        {
+          "name": "price",
+          "type": "DECIMAL(10,2)",
+          "description": "Price of the product at the time of purchase",
+          "isPrimary": false,
+          "isForeign": false
+        }
+      ]
+    }
+  ]
+}

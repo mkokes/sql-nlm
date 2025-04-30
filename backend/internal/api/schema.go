@@ -51,3 +51,29 @@ func HandleCreateSchema(c *gin.Context) {
 
 	c.JSON(http.StatusCreated, s)
 }
+
+// HandleImportSchema imports a schema from a JSON file
+func HandleImportSchema(c *gin.Context) {
+	// Get the file from the request
+	file, _, err := c.Request.FormFile("schemaFile")
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "No schema file provided"})
+		return
+	}
+	defer file.Close()
+
+	// Import the schema from the file
+	s, err := schema.ImportSchemaFromJSON(file)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	// Save the schema to the database
+	if err := schema.CreateSchema(s); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusCreated, s)
+}

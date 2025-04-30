@@ -1,8 +1,11 @@
 import axios from 'axios'
 
+// Check if we're using the mock API (when backend is not available)
+const useMockApi = !process.env.NEXT_PUBLIC_API_URL || process.env.NEXT_PUBLIC_USE_MOCK_API === 'true';
+
 // Create an axios instance with default config
 const api = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080',
+  baseURL: useMockApi ? '' : (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080'),
   headers: {
     'Content-Type': 'application/json',
   },
@@ -33,6 +36,7 @@ api.interceptors.response.use(
     } else if (error.request) {
       // The request was made but no response was received
       console.error('API Error: No response received')
+      console.log('Falling back to mock API...')
     } else {
       // Something happened in setting up the request that triggered an Error
       console.error('API Error:', error.message)
@@ -43,10 +47,46 @@ api.interceptors.response.use(
 
 export default api
 
-// API functions
-export const fetchSchemas = () => api.get('/api/schemas')
-export const createSchema = (schema: any) => api.post('/api/schemas', schema)
-export const fetchSchema = (id: number) => api.get(`/api/schemas/${id}`)
-export const submitQuery = (query: string, schemaId: number) => 
-  api.post('/api/query', { query, schemaId })
-export const fetchQueryHistory = () => api.get('/api/history')
+// API functions with fallback to mock API
+export const fetchSchemas = () => {
+  if (useMockApi) {
+    console.log('Using mock API for schemas');
+    return axios.get('/api/schemas');
+  }
+  return api.get('/api/schemas');
+}
+
+export const createSchema = (schema: any) => {
+  if (useMockApi) {
+    console.log('Using mock API for schema creation');
+    // Mock implementation would go here
+    return Promise.reject(new Error('Schema creation not implemented in mock API'));
+  }
+  return api.post('/api/schemas', schema);
+}
+
+export const fetchSchema = (id: number) => {
+  if (useMockApi) {
+    console.log('Using mock API for schema details');
+    // Mock implementation would go here
+    return Promise.reject(new Error('Schema details not implemented in mock API'));
+  }
+  return api.get(`/api/schemas/${id}`);
+}
+
+export const submitQuery = (query: string, schemaId: number) => {
+  if (useMockApi) {
+    console.log('Using mock API for query submission');
+    return axios.post('/api/query', { query, schemaId });
+  }
+  return api.post('/api/query', { query, schemaId });
+}
+
+export const fetchQueryHistory = () => {
+  if (useMockApi) {
+    console.log('Using mock API for query history');
+    // Mock implementation would go here
+    return Promise.reject(new Error('Query history not implemented in mock API'));
+  }
+  return api.get('/api/history');
+}

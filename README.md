@@ -67,14 +67,103 @@ sql-llm/
 ## Getting Started
 
 ### Prerequisites
-- Go (for backend)
-- Node.js and npm (for frontend)
-- PostgreSQL (or other SQL database)
-- OpenAI API key (or other LLM API)
+- Go 1.18+ (for backend)
+- Node.js 16+ and npm (for frontend)
+- PostgreSQL 12+ (for database)
+- OpenAI API key (for LLM integration)
 
 ### Installation
-1. Clone the repository
-2. Set up the backend (see backend/README.md)
-3. Set up the frontend (see frontend/README.md)
-4. Configure environment variables
-5. Run the application
+
+#### 1. Clone the repository
+```bash
+git clone https://github.com/yourusername/sql-llm.git
+cd sql-llm
+```
+
+#### 2. Set up the database
+```bash
+# Install PostgreSQL if not already installed
+# On Windows: https://www.postgresql.org/download/windows/
+# On macOS: brew install postgresql
+# On Ubuntu: sudo apt install postgresql postgresql-contrib
+
+# Create the database and tables
+cd backend/scripts
+# Edit the setup_db.sql file if needed
+psql -U postgres -f setup_db.sql
+# Or use the setup script (may need to make it executable first)
+chmod +x setup_db.sh
+./setup_db.sh
+```
+
+#### 3. Set up the backend
+```bash
+# Install Go if not already installed
+# https://golang.org/doc/install
+
+# Navigate to the backend directory
+cd backend
+
+# Copy the example .env file and edit it with your settings
+cp .env.example .env
+# Edit .env with your database credentials and OpenAI API key
+
+# Install dependencies
+go mod tidy
+
+# Run the backend server
+go run cmd/api/main.go
+```
+
+#### 4. Set up the frontend
+```bash
+# Navigate to the frontend directory
+cd frontend
+
+# Copy the example .env file and edit it with your settings
+cp .env.example .env
+
+# Install dependencies
+npm install
+
+# Run the development server
+npm run dev
+```
+
+#### 5. Access the application
+- Frontend: http://localhost:3000
+- Backend API: http://localhost:8080
+
+### Configuration
+
+#### Backend Environment Variables (.env)
+```
+# Database Configuration
+DB_HOST=localhost
+DB_PORT=5432
+DB_USER=postgres
+DB_PASSWORD=your_password
+DB_NAME=sqlllm
+
+# OpenAI API Configuration
+OPENAI_API_KEY=your_openai_api_key
+
+# Server Configuration
+PORT=8080
+```
+
+#### Frontend Environment Variables (.env.local)
+```
+NEXT_PUBLIC_API_URL=http://localhost:8080
+```
+
+### Running Tests
+```bash
+# Backend tests
+cd backend
+go test ./...
+
+# Frontend tests
+cd frontend
+npm test
+```

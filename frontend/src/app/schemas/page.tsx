@@ -1,7 +1,6 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
-import axios from 'axios'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -9,7 +8,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Plus, Loader2, Database, Calendar, Upload, FileUp } from 'lucide-react'
+import { Plus, Loader2, Database, Calendar, FileUp } from 'lucide-react'
 import { useToast } from '@/hooks/use-toast'
 import { fetchSchemas as apiFetchSchemas, createSchema, importSchema, importSQLSchema } from '@/lib/api'
 
@@ -408,188 +407,189 @@ export default function SchemasPage() {
                 Add New Schema
               </Button>
             </DialogTrigger>
-          <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
-            <DialogHeader>
-              <DialogTitle>Create New Schema</DialogTitle>
-              <DialogDescription>
-                Define your database structure to help the AI understand your data.
-              </DialogDescription>
-            </DialogHeader>
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div className="grid gap-4 py-4">
-                <div className="grid gap-2">
-                  <label className="text-sm font-medium">
-                    Schema Name
-                  </label>
-                  <Input
-                    value={formData.name}
-                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    placeholder="Enter schema name"
-                    required
-                  />
-                </div>
-
-                <div className="grid gap-2">
-                  <label className="text-sm font-medium">
-                    Description
-                  </label>
-                  <Textarea
-                    value={formData.description}
-                    onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                    placeholder="Describe your database schema"
-                    rows={3}
-                  />
-                </div>
-
-                <div className="space-y-4 mt-2">
-                  <div className="flex justify-between items-center">
-                    <h4 className="text-lg font-medium">Tables</h4>
-                    <Button
-                      type="button"
-                      onClick={addTable}
-                      variant="outline"
-                      size="sm"
-                      className="gap-1"
-                    >
-                      <Plus className="h-3.5 w-3.5" />
-                      Add Table
-                    </Button>
+            <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+              <DialogHeader>
+                <DialogTitle>Create New Schema</DialogTitle>
+                <DialogDescription>
+                  Define your database structure to help the AI understand your data.
+                </DialogDescription>
+              </DialogHeader>
+              <form onSubmit={handleSubmit} className="space-y-6">
+                <div className="grid gap-4 py-4">
+                  <div className="grid gap-2">
+                    <label className="text-sm font-medium">
+                      Schema Name
+                    </label>
+                    <Input
+                      value={formData.name}
+                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                      placeholder="Enter schema name"
+                      required
+                    />
                   </div>
 
-                  {formData.tables.map((table, tableIndex) => (
-                    <Card key={tableIndex} className="overflow-hidden">
-                      <CardHeader className="pb-3">
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                          <div className="grid gap-2">
-                            <label className="text-sm font-medium">
-                              Table Name
-                            </label>
-                            <Input
-                              value={table.name}
-                              onChange={(e) => updateTable(tableIndex, 'name', e.target.value)}
-                              placeholder="Enter table name"
-                              required
-                            />
-                          </div>
-                          <div className="grid gap-2">
-                            <label className="text-sm font-medium">
-                              Table Description
-                            </label>
-                            <Input
-                              value={table.description}
-                              onChange={(e) => updateTable(tableIndex, 'description', e.target.value)}
-                              placeholder="Describe this table"
-                            />
-                          </div>
-                        </div>
-                      </CardHeader>
-                      <CardContent className="pb-3">
-                        <div className="space-y-2">
-                          <div className="flex justify-between items-center">
-                            <h5 className="text-md font-medium">Columns</h5>
-                            <Button
-                              type="button"
-                              onClick={() => addColumn(tableIndex)}
-                              variant="outline"
-                              size="sm"
-                              className="gap-1 text-xs"
-                            >
-                              <Plus className="h-3 w-3" />
-                              Add Column
-                            </Button>
-                          </div>
+                  <div className="grid gap-2">
+                    <label className="text-sm font-medium">
+                      Description
+                    </label>
+                    <Textarea
+                      value={formData.description}
+                      onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                      placeholder="Describe your database schema"
+                      rows={3}
+                    />
+                  </div>
 
-                          <div className="overflow-x-auto">
-                            <Table>
-                              <TableHeader>
-                                <TableRow>
-                                  <TableHead className="w-[150px]">Name</TableHead>
-                                  <TableHead className="w-[100px]">Type</TableHead>
-                                  <TableHead className="w-[200px]">Description</TableHead>
-                                  <TableHead className="w-[80px]">Primary</TableHead>
-                                  <TableHead className="w-[80px]">Foreign</TableHead>
-                                  <TableHead className="w-[150px]">References</TableHead>
-                                </TableRow>
-                              </TableHeader>
-                              <TableBody>
-                                {table.columns.map((column, columnIndex) => (
-                                  <TableRow key={columnIndex}>
-                                    <TableCell>
-                                      <Input
-                                        type="text"
-                                        value={column.name}
-                                        onChange={(e) => updateColumn(tableIndex, columnIndex, 'name', e.target.value)}
-                                        required
-                                      />
-                                    </TableCell>
-                                    <TableCell>
-                                      <Input
-                                        type="text"
-                                        value={column.type}
-                                        onChange={(e) => updateColumn(tableIndex, columnIndex, 'type', e.target.value)}
-                                        required
-                                      />
-                                    </TableCell>
-                                    <TableCell>
-                                      <Input
-                                        type="text"
-                                        value={column.description}
-                                        onChange={(e) => updateColumn(tableIndex, columnIndex, 'description', e.target.value)}
-                                      />
-                                    </TableCell>
-                                    <TableCell className="text-center">
-                                      <input
-                                        type="checkbox"
-                                        checked={column.isPrimary}
-                                        onChange={(e) => updateColumn(tableIndex, columnIndex, 'isPrimary', e.target.checked)}
-                                        className="rounded border-primary text-primary focus:ring-primary"
-                                      />
-                                    </TableCell>
-                                    <TableCell className="text-center">
-                                      <input
-                                        type="checkbox"
-                                        checked={column.isForeign}
-                                        onChange={(e) => updateColumn(tableIndex, columnIndex, 'isForeign', e.target.checked)}
-                                        className="rounded border-primary text-primary focus:ring-primary"
-                                      />
-                                    </TableCell>
-                                    <TableCell>
-                                      <Input
-                                        type="text"
-                                        value={column.references || ''}
-                                        onChange={(e) => updateColumn(tableIndex, columnIndex, 'references', e.target.value)}
-                                        disabled={!column.isForeign}
-                                      />
-                                    </TableCell>
-                                  </TableRow>
-                                ))}
-                              </TableBody>
-                            </Table>
+                  <div className="space-y-4 mt-2">
+                    <div className="flex justify-between items-center">
+                      <h4 className="text-lg font-medium">Tables</h4>
+                      <Button
+                        type="button"
+                        onClick={addTable}
+                        variant="outline"
+                        size="sm"
+                        className="gap-1"
+                      >
+                        <Plus className="h-3.5 w-3.5" />
+                        Add Table
+                      </Button>
+                    </div>
+
+                    {formData.tables.map((table, tableIndex) => (
+                      <Card key={tableIndex} className="overflow-hidden">
+                        <CardHeader className="pb-3">
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div className="grid gap-2">
+                              <label className="text-sm font-medium">
+                                Table Name
+                              </label>
+                              <Input
+                                value={table.name}
+                                onChange={(e) => updateTable(tableIndex, 'name', e.target.value)}
+                                placeholder="Enter table name"
+                                required
+                              />
+                            </div>
+                            <div className="grid gap-2">
+                              <label className="text-sm font-medium">
+                                Table Description
+                              </label>
+                              <Input
+                                value={table.description}
+                                onChange={(e) => updateTable(tableIndex, 'description', e.target.value)}
+                                placeholder="Describe this table"
+                              />
+                            </div>
                           </div>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  ))}
+                        </CardHeader>
+                        <CardContent className="pb-3">
+                          <div className="space-y-2">
+                            <div className="flex justify-between items-center">
+                              <h5 className="text-md font-medium">Columns</h5>
+                              <Button
+                                type="button"
+                                onClick={() => addColumn(tableIndex)}
+                                variant="outline"
+                                size="sm"
+                                className="gap-1 text-xs"
+                              >
+                                <Plus className="h-3 w-3" />
+                                Add Column
+                              </Button>
+                            </div>
+
+                            <div className="overflow-x-auto">
+                              <Table>
+                                <TableHeader>
+                                  <TableRow>
+                                    <TableHead className="w-[150px]">Name</TableHead>
+                                    <TableHead className="w-[100px]">Type</TableHead>
+                                    <TableHead className="w-[200px]">Description</TableHead>
+                                    <TableHead className="w-[80px]">Primary</TableHead>
+                                    <TableHead className="w-[80px]">Foreign</TableHead>
+                                    <TableHead className="w-[150px]">References</TableHead>
+                                  </TableRow>
+                                </TableHeader>
+                                <TableBody>
+                                  {table.columns.map((column, columnIndex) => (
+                                    <TableRow key={columnIndex}>
+                                      <TableCell>
+                                        <Input
+                                          type="text"
+                                          value={column.name}
+                                          onChange={(e) => updateColumn(tableIndex, columnIndex, 'name', e.target.value)}
+                                          required
+                                        />
+                                      </TableCell>
+                                      <TableCell>
+                                        <Input
+                                          type="text"
+                                          value={column.type}
+                                          onChange={(e) => updateColumn(tableIndex, columnIndex, 'type', e.target.value)}
+                                          required
+                                        />
+                                      </TableCell>
+                                      <TableCell>
+                                        <Input
+                                          type="text"
+                                          value={column.description}
+                                          onChange={(e) => updateColumn(tableIndex, columnIndex, 'description', e.target.value)}
+                                        />
+                                      </TableCell>
+                                      <TableCell className="text-center">
+                                        <input
+                                          type="checkbox"
+                                          checked={column.isPrimary}
+                                          onChange={(e) => updateColumn(tableIndex, columnIndex, 'isPrimary', e.target.checked)}
+                                          className="rounded border-primary text-primary focus:ring-primary"
+                                        />
+                                      </TableCell>
+                                      <TableCell className="text-center">
+                                        <input
+                                          type="checkbox"
+                                          checked={column.isForeign}
+                                          onChange={(e) => updateColumn(tableIndex, columnIndex, 'isForeign', e.target.checked)}
+                                          className="rounded border-primary text-primary focus:ring-primary"
+                                        />
+                                      </TableCell>
+                                      <TableCell>
+                                        <Input
+                                          type="text"
+                                          value={column.references || ''}
+                                          onChange={(e) => updateColumn(tableIndex, columnIndex, 'references', e.target.value)}
+                                          disabled={!column.isForeign}
+                                        />
+                                      </TableCell>
+                                    </TableRow>
+                                  ))}
+                                </TableBody>
+                              </Table>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
                 </div>
-              </div>
-              <DialogFooter>
-                <Button type="button" variant="outline" onClick={() => setShowForm(false)}>
-                  Cancel
-                </Button>
-                <Button type="submit" disabled={loading}>
-                  {loading ? (
-                    <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Saving...
-                    </>
-                  ) : (
-                    'Save Schema'
-                  )}
-                </Button>
-              </DialogFooter>
-            </form>
-          </DialogContent>
-        </Dialog>
+                <DialogFooter>
+                  <Button type="button" variant="outline" onClick={() => setShowForm(false)}>
+                    Cancel
+                  </Button>
+                  <Button type="submit" disabled={loading}>
+                    {loading ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Saving...
+                      </>
+                    ) : (
+                      'Save Schema'
+                    )}
+                  </Button>
+                </DialogFooter>
+              </form>
+            </DialogContent>
+          </Dialog>
+        </div>
       </div>
 
       {error && (

@@ -12,7 +12,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { MessageSquare, Send, Database, Code } from 'lucide-react';
+import { MessageSquare, Send, Code } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 type Message = {
@@ -25,7 +25,7 @@ type Message = {
 
 type Schema = {
   ID: number;
-  Name: string;
+  name: string;
   Description: string;
 };
 
@@ -38,6 +38,12 @@ export default function ChatInterface() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
 
+  // Ensure selectedSchema is set when schemas are loaded
+  useEffect(() => {
+    if (schemas.length > 0 && selectedSchema === null) {
+      setSelectedSchema(schemas[0].ID);
+    }
+  }, [schemas, selectedSchema]);
   // Fetch schemas on component mount
   useEffect(() => {
     const fetchSchemas = async () => {
@@ -130,8 +136,8 @@ export default function ChatInterface() {
     ];
   };
 
-  // Function to use an example query
-  const useExampleQuery = (query: string) => {
+  // Function to set an example query
+  const handleExampleQuery = (query: string) => {
     setInput(query);
   };
 
@@ -146,14 +152,18 @@ export default function ChatInterface() {
             onValueChange={value => setSelectedSchema(Number(value))}
           >
             <SelectTrigger>
-              <SelectValue placeholder="Select a schema" />
+              <SelectValue placeholder="Select a schema">
+                {selectedSchema && schemas.find(s => s.ID === selectedSchema)?.name}
+              </SelectValue>
             </SelectTrigger>
             <SelectContent>
-              {schemas.map(schema => (
-                <SelectItem key={schema.ID} value={schema.ID.toString()}>
-                  {schema.Name}
-                </SelectItem>
-              ))}
+              {schemas.map(schema => {
+                return (
+                  <SelectItem key={schema.ID} value={schema.ID.toString()}>
+                    {schema.name}
+                  </SelectItem>
+                );
+              })}
             </SelectContent>
           </Select>
         </div>
@@ -182,7 +192,7 @@ export default function ChatInterface() {
                     {getExampleQueries().map((query, index) => (
                       <Button
                         key={index}
-                        onClick={() => useExampleQuery(query)}
+                        onClick={() => handleExampleQuery(query)}
                         variant="outline"
                         className="w-full justify-start text-left h-auto py-2 px-3"
                       >
@@ -241,7 +251,7 @@ export default function ChatInterface() {
                       <tbody className="bg-card divide-y divide-border">
                         {message.results.map((row, i) => (
                           <tr key={i}>
-                            {Object.values(row).map((value: any, j) => (
+                            {Object.values(row).map((value: unknown, j) => (
                               <td key={j} className="px-3 py-2 text-sm whitespace-nowrap">
                                 {value === null ? 'NULL' : String(value)}
                               </td>

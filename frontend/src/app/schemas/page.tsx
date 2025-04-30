@@ -16,8 +16,8 @@ type Schema = {
   ID: number
   name: string
   description: string
-  created_at: string
-  updated_at: string
+  CreatedAt: string
+  UpdatedAt: string
 }
 
 type Table = {
@@ -269,7 +269,7 @@ export default function SchemasPage() {
       setImportLoading(false)
     }
   }
-
+console.log('schemas', schemas);
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
@@ -630,7 +630,7 @@ export default function SchemasPage() {
         </Card>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {schemas.map((schema) => (
+          {schemas.map((schema) =>(
             <Card key={schema.ID}>
               <CardHeader>
                 <CardTitle>{schema.name}</CardTitle>
@@ -639,11 +639,11 @@ export default function SchemasPage() {
               <CardFooter className="flex justify-between text-sm text-muted-foreground border-t pt-4">
                 <div className="flex items-center gap-1">
                   <Calendar className="h-3.5 w-3.5" />
-                  <span>Created: {new Date(schema.created_at).toLocaleDateString()}</span>
+                  <span>Created: {new Date(schema.CreatedAt).toLocaleDateString()}</span>
                 </div>
                 <div className="flex items-center gap-1">
                   <Calendar className="h-3.5 w-3.5" />
-                  <span>Updated: {new Date(schema.updated_at).toLocaleDateString()}</span>
+                  <span>Updated: {new Date(schema.UpdatedAt).toLocaleDateString()}</span>
                 </div>
               </CardFooter>
             </Card>

@@ -72,13 +72,16 @@ sql-llm/
 - Yarn 3 (for frontend package management)
 - PostgreSQL 12+ (for database)
 - OpenAI API key (for LLM integration)
+- Bash-compatible shell (Git Bash recommended for Windows users)
 
 ### Installation
 
+> **Note:** After completing steps 1-4 below, you can use the provided start script to run both frontend and backend with a single command. See step 5 for details.
+
 #### 1. Clone the repository
 ```bash
-git clone https://github.com/yourusername/sql-llm.git
-cd sql-llm
+git clone https://github.com/mkokes/sql-nlm.git
+cd sql-nlm
 ```
 
 #### 2. Set up the database
@@ -131,8 +134,26 @@ yarn install
 yarn dev
 ```
 
-#### 5. Access the application
-- Frontend: http://localhost:3000
+#### 5. Using the start script (recommended)
+```bash
+# Make the script executable
+chmod +x start.sh
+
+# Run the start script
+./start.sh
+```
+
+The start script will:
+- Check for required dependencies (Node.js and Go)
+- Start the frontend server (Next.js)
+- Start the backend server (Go API)
+- Display URLs for accessing both services
+- Properly handle process management and cleanup
+
+To stop the application, press `Ctrl+C` in the terminal where the script is running.
+
+#### 6. Access the application
+- Frontend: http://localhost:3000 (or another port if 3000 is in use)
 - Backend API: http://localhost:8080
 
 ### Configuration

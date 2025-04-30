@@ -19,7 +19,7 @@ if %ERRORLEVEL% neq 0 (
 
 REM Start the frontend
 echo Starting frontend server...
-start cmd /k "cd frontend && yarn && yarn dev"
+start cmd /k "cd frontend && yarn install && yarn dev"
 
 REM Start the backend if Go is installed
 if "%GO_INSTALLED%"=="true" (

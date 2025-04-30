@@ -68,7 +68,8 @@ sql-llm/
 
 ### Prerequisites
 - Go 1.18+ (for backend)
-- Node.js 16+ and npm (for frontend)
+- Node.js 16+ (for frontend, recommended to use nvm for version management)
+- Yarn 3 (for frontend package management)
 - PostgreSQL 12+ (for database)
 - OpenAI API key (for LLM integration)
 
@@ -124,10 +125,10 @@ cd frontend
 cp .env.example .env
 
 # Install dependencies
-npm install
+yarn install
 
 # Run the development server
-npm run dev
+yarn dev
 ```
 
 #### 5. Access the application
@@ -165,5 +166,5 @@ go test ./...
 
 # Frontend tests
 cd frontend
-npm test
+yarn test
 ```

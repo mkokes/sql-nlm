@@ -1,7 +1,14 @@
 import './globals.css'
-import { Inter } from 'next/font/google'
+import { Inter as FontSans } from 'next/font/google'
+import { cn } from '@/lib/utils'
+import { Header } from '@/components/layout/header'
+import { Footer } from '@/components/layout/footer'
+import { Toaster } from '@/components/ui/toaster'
 
-const inter = Inter({ subsets: ['latin'] })
+const fontSans = FontSans({
+  subsets: ['latin'],
+  variable: '--font-sans',
+})
 
 export const metadata = {
   title: 'SQL-LLM: Natural Language to SQL',
@@ -14,28 +21,22 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en">
-      <body className={inter.className}>
-        <div className="min-h-screen bg-gray-50">
-          <header className="bg-white shadow">
-            <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-              <h1 className="text-3xl font-bold text-gray-900">
-                SQL-LLM: Natural Language to SQL
-              </h1>
-            </div>
-          </header>
-          <main>
-            <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+    <html lang="en" suppressHydrationWarning>
+      <body
+        className={cn(
+          'min-h-screen bg-background font-sans antialiased',
+          fontSans.variable
+        )}
+      >
+        <div className="relative flex min-h-screen flex-col">
+          <Header />
+          <main className="flex-1">
+            <div className="container py-6">
               {children}
             </div>
           </main>
-          <footer className="bg-white shadow mt-auto py-4">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-              <p className="text-center text-gray-500 text-sm">
-                &copy; {new Date().getFullYear()} SQL-LLM. All rights reserved.
-              </p>
-            </div>
-          </footer>
+          <Footer />
+          <Toaster />
         </div>
       </body>
     </html>

@@ -24,7 +24,7 @@ fi
 # Start the frontend
 echo "Starting frontend server..."
 cd frontend
-yarn
+yarn install
 yarn dev &
 FRONTEND_PID=$!
 cd ..

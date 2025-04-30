@@ -110,13 +110,13 @@ Before you begin, you'll need to install the following software:
    copy .env.example .env.local
    ```
    Make sure `NEXT_PUBLIC_API_URL` is set to `http://localhost:8080`.
-5. Install the Node.js dependencies:
+5. Install the Node.js dependencies using Yarn:
    ```
-   npm install
+   yarn
    ```
 6. Run the frontend development server:
    ```
-   npm run dev
+   yarn dev
    ```
    You should see output indicating that the server is running on port 3000.
 

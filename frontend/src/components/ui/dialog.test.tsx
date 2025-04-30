@@ -1,5 +1,5 @@
-import React from 'react'
-import { render, screen } from '@testing-library/react'
+import React from 'react';
+import { render, screen } from '@testing-library/react';
 import {
   Dialog,
   DialogContent,
@@ -8,8 +8,8 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from './dialog'
-import { Button } from './button'
+} from './dialog';
+import { Button } from './button';
 
 describe('Dialog component', () => {
   it('renders the trigger element', () => {
@@ -29,12 +29,12 @@ describe('Dialog component', () => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    )
+    );
 
     // Check if the trigger button is rendered
-    const triggerButton = screen.getByRole('button', { name: /open dialog/i })
-    expect(triggerButton).toBeInTheDocument()
-  })
+    const triggerButton = screen.getByRole('button', { name: /open dialog/i });
+    expect(triggerButton).toBeInTheDocument();
+  });
 
   it('renders dialog components with custom classes', () => {
     render(
@@ -50,10 +50,10 @@ describe('Dialog component', () => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    )
+    );
 
     // Check if the trigger has the custom class
-    const trigger = screen.getByText('Trigger')
-    expect(trigger).toHaveClass('custom-trigger')
-  })
-})
+    const trigger = screen.getByText('Trigger');
+    expect(trigger).toHaveClass('custom-trigger');
+  });
+});

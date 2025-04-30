@@ -1,10 +1,17 @@
-'use client'
+'use client';
 
-import { useState } from 'react'
-import Link from 'next/link'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
-import { MessageSquare, Database, ArrowRight, FileText, Code, Table } from 'lucide-react'
+import { useState } from 'react';
+import Link from 'next/link';
+import { Button } from '@/components/ui/button';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
+import { MessageSquare, Database, ArrowRight, FileText, Code, Table } from 'lucide-react';
 
 export default function Home() {
   const [showSetupInfo, setShowSetupInfo] = useState(false);
@@ -21,9 +28,7 @@ export default function Home() {
             </p>
             <div className="flex flex-wrap justify-center gap-4">
               <Button asChild size="lg" variant="secondary">
-                <Link href="/chat">
-                  Try It Now
-                </Link>
+                <Link href="/chat">Try It Now</Link>
               </Button>
               <Button
                 size="lg"
@@ -49,7 +54,8 @@ export default function Home() {
               <CardTitle>Natural Language Queries</CardTitle>
             </div>
             <CardDescription>
-              Ask questions about your data in plain English. No need to remember SQL syntax or table structures.
+              Ask questions about your data in plain English. No need to remember SQL syntax or
+              table structures.
             </CardDescription>
           </CardHeader>
           <CardFooter className="pt-2">
@@ -70,7 +76,8 @@ export default function Home() {
               <CardTitle>Schema Management</CardTitle>
             </div>
             <CardDescription>
-              Upload and manage your database schemas to help the AI understand your data structure and relationships.
+              Upload and manage your database schemas to help the AI understand your data structure
+              and relationships.
             </CardDescription>
           </CardHeader>
           <CardFooter className="pt-2">
@@ -148,14 +155,34 @@ export default function Home() {
                 <li>
                   <span className="font-medium text-foreground">Install Go</span>
                   <div className="ml-6 mt-1 bg-muted p-3 rounded-md text-sm">
-                    <p>Download from <a href="https://golang.org/dl/" target="_blank" className="text-primary hover:underline">golang.org/dl</a></p>
+                    <p>
+                      Download from{' '}
+                      <a
+                        href="https://golang.org/dl/"
+                        target="_blank"
+                        className="text-primary hover:underline"
+                        rel="noreferrer"
+                      >
+                        golang.org/dl
+                      </a>
+                    </p>
                   </div>
                 </li>
 
                 <li>
                   <span className="font-medium text-foreground">Install PostgreSQL</span>
                   <div className="ml-6 mt-1 bg-muted p-3 rounded-md text-sm">
-                    <p>Download from <a href="https://www.postgresql.org/download/" target="_blank" className="text-primary hover:underline">postgresql.org/download</a></p>
+                    <p>
+                      Download from{' '}
+                      <a
+                        href="https://www.postgresql.org/download/"
+                        target="_blank"
+                        className="text-primary hover:underline"
+                        rel="noreferrer"
+                      >
+                        postgresql.org/download
+                      </a>
+                    </p>
                   </div>
                 </li>
 
@@ -163,16 +190,22 @@ export default function Home() {
                   <span className="font-medium text-foreground">Set up the database</span>
                   <div className="ml-6 mt-1 bg-muted p-3 rounded-md text-sm">
                     <pre className="bg-card text-card-foreground p-2 rounded-md text-xs overflow-x-auto">
-                      cd backend/scripts<br />
+                      cd backend/scripts
+                      <br />
                       psql -U postgres -f setup_db.sql
                     </pre>
                   </div>
                 </li>
 
                 <li>
-                  <span className="font-medium text-foreground">Configure environment variables</span>
+                  <span className="font-medium text-foreground">
+                    Configure environment variables
+                  </span>
                   <div className="ml-6 mt-1 bg-muted p-3 rounded-md text-sm">
-                    <p>Edit <code className="bg-card px-1 rounded-sm">backend/.env</code> with your database credentials and OpenAI API key</p>
+                    <p>
+                      Edit <code className="bg-card px-1 rounded-sm">backend/.env</code> with your
+                      database credentials and OpenAI API key
+                    </p>
                   </div>
                 </li>
 
@@ -181,9 +214,13 @@ export default function Home() {
                   <div className="ml-6 mt-1 bg-muted p-3 rounded-md text-sm">
                     <p>Run the start script from the project root:</p>
                     <pre className="bg-card text-card-foreground p-2 rounded-md text-xs overflow-x-auto mt-1">
-                      # On Windows<br />
-                      start.bat<br /><br />
-                      # On Linux/macOS<br />
+                      # On Windows
+                      <br />
+                      start.bat
+                      <br />
+                      <br />
+                      # On Linux/macOS
+                      <br />
                       ./start.sh
                     </pre>
                   </div>
@@ -194,12 +231,21 @@ export default function Home() {
             <div>
               <h4 className="text-lg font-medium mb-2">Need Help?</h4>
               <p className="text-muted-foreground">
-                Check the <a href="https://github.com/mkokes/sql-nlm" target="_blank" className="text-primary hover:underline">GitHub repository</a> for more detailed instructions and troubleshooting.
+                Check the{' '}
+                <a
+                  href="https://github.com/mkokes/sql-nlm"
+                  target="_blank"
+                  className="text-primary hover:underline"
+                  rel="noreferrer"
+                >
+                  GitHub repository
+                </a>{' '}
+                for more detailed instructions and troubleshooting.
               </p>
             </div>
           </CardContent>
         </Card>
       )}
     </div>
-  )
+  );
 }

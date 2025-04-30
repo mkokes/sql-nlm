@@ -1,51 +1,52 @@
-import axios from 'axios'
+import axios from 'axios';
 
 // Check if we're using the mock API (when backend is not available)
-const useMockApi = !process.env.NEXT_PUBLIC_API_URL || process.env.NEXT_PUBLIC_USE_MOCK_API === 'true';
+const useMockApi =
+  !process.env.NEXT_PUBLIC_API_URL || process.env.NEXT_PUBLIC_USE_MOCK_API === 'true';
 
 // Create an axios instance with default config
 const api = axios.create({
-  baseURL: useMockApi ? '' : (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080'),
+  baseURL: useMockApi ? '' : process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080',
   headers: {
     'Content-Type': 'application/json',
   },
-})
+});
 
 // Add a request interceptor
 api.interceptors.request.use(
-  (config) => {
+  config => {
     // You can add auth tokens here if needed
-    return config
+    return config;
   },
-  (error) => {
-    return Promise.reject(error)
+  error => {
+    return Promise.reject(error);
   }
-)
+);
 
 // Add a response interceptor
 api.interceptors.response.use(
-  (response) => {
-    return response
+  response => {
+    return response;
   },
-  (error) => {
+  error => {
     // Handle common errors here
     if (error.response) {
       // The request was made and the server responded with a status code
       // that falls out of the range of 2xx
-      console.error('API Error:', error.response.data)
+      console.error('API Error:', error.response.data);
     } else if (error.request) {
       // The request was made but no response was received
-      console.error('API Error: No response received')
-      console.log('Falling back to mock API...')
+      console.error('API Error: No response received');
+      console.log('Falling back to mock API...');
     } else {
       // Something happened in setting up the request that triggered an Error
-      console.error('API Error:', error.message)
+      console.error('API Error:', error.message);
     }
-    return Promise.reject(error)
+    return Promise.reject(error);
   }
-)
+);
 
-export default api
+export default api;
 
 // API functions with fallback to mock API
 export const fetchSchemas = () => {
@@ -54,7 +55,7 @@ export const fetchSchemas = () => {
     return axios.get('/api/schemas');
   }
   return api.get('/api/schemas');
-}
+};
 
 export const createSchema = (schema: any) => {
   if (useMockApi) {
@@ -63,7 +64,7 @@ export const createSchema = (schema: any) => {
     return Promise.reject(new Error('Schema creation not implemented in mock API'));
   }
   return api.post('/api/schemas', schema);
-}
+};
 
 export const fetchSchema = (id: number) => {
   if (useMockApi) {
@@ -72,7 +73,7 @@ export const fetchSchema = (id: number) => {
     return Promise.reject(new Error('Schema details not implemented in mock API'));
   }
   return api.get(`/api/schemas/${id}`);
-}
+};
 
 export const submitQuery = (query: string, schemaId: number) => {
   if (useMockApi) {
@@ -80,7 +81,7 @@ export const submitQuery = (query: string, schemaId: number) => {
     return axios.post('/api/query', { query, schemaId });
   }
   return api.post('/api/query', { query, schemaId });
-}
+};
 
 export const fetchQueryHistory = () => {
   if (useMockApi) {
@@ -89,7 +90,7 @@ export const fetchQueryHistory = () => {
     return Promise.reject(new Error('Query history not implemented in mock API'));
   }
   return api.get('/api/history');
-}
+};
 
 export const importSchema = (file: File) => {
   if (useMockApi) {
@@ -108,7 +109,7 @@ export const importSchema = (file: File) => {
       'Content-Type': 'multipart/form-data',
     },
   });
-}
+};
 
 export const importSQLSchema = (file: File, name: string, description: string, dialect: string) => {
   if (useMockApi) {
@@ -130,4 +131,4 @@ export const importSQLSchema = (file: File, name: string, description: string, d
       'Content-Type': 'multipart/form-data',
     },
   });
-}
+};

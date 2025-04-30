@@ -1,6 +1,6 @@
-'use client'
+'use client';
 
-import ChatInterface from '@/components/chat/ChatInterface'
+import ChatInterface from '@/components/chat/ChatInterface';
 
 export default function ChatPage() {
   return (
@@ -13,5 +13,5 @@ export default function ChatPage() {
       </div>
       <ChatInterface />
     </div>
-  )
+  );
 }

@@ -1,5 +1,5 @@
-import React from 'react'
-import { render, screen } from '@testing-library/react'
+import React from 'react';
+import { render, screen } from '@testing-library/react';
 import {
   Toast,
   ToastAction,
@@ -8,12 +8,12 @@ import {
   ToastProvider,
   ToastTitle,
   ToastViewport,
-} from './toast'
+} from './toast';
 
 describe('Toast component', () => {
   it('renders toast with title, description, and action', () => {
-    const onActionClick = jest.fn()
-    const onOpenChange = jest.fn()
+    const onActionClick = jest.fn();
+    const onOpenChange = jest.fn();
 
     render(
       <ToastProvider>
@@ -27,17 +27,17 @@ describe('Toast component', () => {
         </Toast>
         <ToastViewport />
       </ToastProvider>
-    )
+    );
 
     // Check if the toast elements are rendered
-    const title = screen.getByText('Toast Title')
-    const description = screen.getByText('Toast Description')
-    const action = screen.getByText('Action')
+    const title = screen.getByText('Toast Title');
+    const description = screen.getByText('Toast Description');
+    const action = screen.getByText('Action');
 
-    expect(title).toBeInTheDocument()
-    expect(description).toBeInTheDocument()
-    expect(action).toBeInTheDocument()
-  })
+    expect(title).toBeInTheDocument();
+    expect(description).toBeInTheDocument();
+    expect(action).toBeInTheDocument();
+  });
 
   it('renders toast with different variants', () => {
     render(
@@ -47,12 +47,12 @@ describe('Toast component', () => {
         </Toast>
         <ToastViewport />
       </ToastProvider>
-    )
+    );
 
     // Check if the toast is rendered with the destructive class
-    const toast = screen.getByText('Destructive Toast').closest('li')
-    expect(toast).toHaveClass('destructive')
-  })
+    const toast = screen.getByText('Destructive Toast').closest('li');
+    expect(toast).toHaveClass('destructive');
+  });
 
   it('applies custom className to toast elements', () => {
     render(
@@ -66,16 +66,16 @@ describe('Toast component', () => {
         </Toast>
         <ToastViewport className="custom-viewport" />
       </ToastProvider>
-    )
+    );
 
     // Check if custom classes are applied
-    const title = screen.getByText('Title')
-    expect(title).toHaveClass('custom-title')
+    const title = screen.getByText('Title');
+    expect(title).toHaveClass('custom-title');
 
-    const description = screen.getByText('Description')
-    expect(description).toHaveClass('custom-description')
+    const description = screen.getByText('Description');
+    expect(description).toHaveClass('custom-description');
 
-    const action = screen.getByText('Action')
-    expect(action).toHaveClass('custom-action')
-  })
-})
+    const action = screen.getByText('Action');
+    expect(action).toHaveClass('custom-action');
+  });
+});

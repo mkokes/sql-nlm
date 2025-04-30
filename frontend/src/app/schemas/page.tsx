@@ -11,14 +11,14 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Plus, Loader2, Database, Calendar, Upload, FileUp } from 'lucide-react'
 import { useToast } from '@/hooks/use-toast'
-import { importSchema, importSQLSchema } from '@/lib/api'
+import { fetchSchemas as apiFetchSchemas, createSchema, importSchema, importSQLSchema } from '@/lib/api'
 
 type Schema = {
   ID: number
-  Name: string
-  Description: string
-  CreatedAt: string
-  UpdatedAt: string
+  name: string
+  description: string
+  created_at: string
+  updated_at: string
 }
 
 type Table = {
@@ -78,7 +78,7 @@ export default function SchemasPage() {
   const fetchSchemas = async () => {
     try {
       setLoading(true)
-      const response = await axios.get('/api/schemas')
+      const response = await apiFetchSchemas()
       setSchemas(response.data)
       setError(null)
     } catch (err) {
@@ -98,7 +98,7 @@ export default function SchemasPage() {
     e.preventDefault()
     try {
       setLoading(true)
-      await axios.post('/api/schemas', formData)
+      await createSchema(formData)
       setShowForm(false)
       setFormData({
         name: '',
@@ -633,17 +633,17 @@ export default function SchemasPage() {
           {schemas.map((schema) => (
             <Card key={schema.ID}>
               <CardHeader>
-                <CardTitle>{schema.Name}</CardTitle>
-                <CardDescription>{schema.Description}</CardDescription>
+                <CardTitle>{schema.name}</CardTitle>
+                <CardDescription>{schema.description}</CardDescription>
               </CardHeader>
               <CardFooter className="flex justify-between text-sm text-muted-foreground border-t pt-4">
                 <div className="flex items-center gap-1">
                   <Calendar className="h-3.5 w-3.5" />
-                  <span>Created: {new Date(schema.CreatedAt).toLocaleDateString()}</span>
+                  <span>Created: {new Date(schema.created_at).toLocaleDateString()}</span>
                 </div>
                 <div className="flex items-center gap-1">
                   <Calendar className="h-3.5 w-3.5" />
-                  <span>Updated: {new Date(schema.UpdatedAt).toLocaleDateString()}</span>
+                  <span>Updated: {new Date(schema.updated_at).toLocaleDateString()}</span>
                 </div>
               </CardFooter>
             </Card>

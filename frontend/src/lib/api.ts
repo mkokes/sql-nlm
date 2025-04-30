@@ -109,3 +109,25 @@ export const importSchema = (file: File) => {
     },
   });
 }
+
+export const importSQLSchema = (file: File, name: string, description: string, dialect: string) => {
+  if (useMockApi) {
+    console.log('Using mock API for SQL schema import');
+    // Mock implementation would go here
+    return Promise.reject(new Error('SQL schema import not implemented in mock API'));
+  }
+
+  // Create a FormData object to send the file and metadata
+  const formData = new FormData();
+  formData.append('schemaFile', file);
+  formData.append('name', name);
+  formData.append('description', description);
+  formData.append('dialect', dialect);
+
+  // Use a custom config to send form data
+  return api.post('/api/schemas/import-sql', formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  });
+}

@@ -8,9 +8,10 @@ import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Plus, Loader2, Database, Calendar, Upload, FileUp } from 'lucide-react'
 import { useToast } from '@/hooks/use-toast'
-import { importSchema } from '@/lib/api'
+import { importSchema, importSQLSchema } from '@/lib/api'
 
 type Schema = {
   ID: number
@@ -43,6 +44,10 @@ export default function SchemasPage() {
   const [showImportDialog, setShowImportDialog] = useState(false)
   const [importFile, setImportFile] = useState<File | null>(null)
   const [importLoading, setImportLoading] = useState(false)
+  const [importFormat, setImportFormat] = useState<'json' | 'sql'>('json')
+  const [sqlDialect, setSqlDialect] = useState<string>('postgresql')
+  const [sqlSchemaName, setSqlSchemaName] = useState<string>('')
+  const [sqlSchemaDescription, setSqlSchemaDescription] = useState<string>('')
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [formData, setFormData] = useState({
     name: '',
@@ -219,9 +224,33 @@ export default function SchemasPage() {
 
     try {
       setImportLoading(true)
-      await importSchema(importFile)
+
+      if (importFormat === 'json') {
+        await importSchema(importFile)
+      } else {
+        // For SQL imports, we need additional metadata
+        if (!sqlSchemaName) {
+          toast({
+            title: "Schema name required",
+            description: "Please provide a name for the imported schema.",
+            variant: "destructive",
+          })
+          setImportLoading(false)
+          return
+        }
+
+        await importSQLSchema(
+          importFile,
+          sqlSchemaName,
+          sqlSchemaDescription,
+          sqlDialect
+        )
+      }
+
       setShowImportDialog(false)
       setImportFile(null)
+      setSqlSchemaName('')
+      setSqlSchemaDescription('')
       if (fileInputRef.current) {
         fileInputRef.current.value = ''
       }
@@ -263,23 +292,90 @@ export default function SchemasPage() {
               <DialogHeader>
                 <DialogTitle>Import Schema</DialogTitle>
                 <DialogDescription>
-                  Import a database schema from a JSON file.
+                  Import a database schema from a file.
                 </DialogDescription>
               </DialogHeader>
               <div className="grid gap-4 py-4">
                 <div className="grid gap-2">
                   <label className="text-sm font-medium">
-                    Schema File (JSON)
+                    Import Format
+                  </label>
+                  <Select
+                    value={importFormat}
+                    onValueChange={(value) => setImportFormat(value as 'json' | 'sql')}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select format" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="json">JSON Schema</SelectItem>
+                      <SelectItem value="sql">SQL DDL</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {importFormat === 'sql' && (
+                  <>
+                    <div className="grid gap-2">
+                      <label className="text-sm font-medium">
+                        SQL Dialect
+                      </label>
+                      <Select
+                        value={sqlDialect}
+                        onValueChange={setSqlDialect}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select SQL dialect" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="postgresql">PostgreSQL</SelectItem>
+                          <SelectItem value="mysql">MySQL</SelectItem>
+                          <SelectItem value="sqlite">SQLite</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    <div className="grid gap-2">
+                      <label className="text-sm font-medium">
+                        Schema Name
+                      </label>
+                      <Input
+                        value={sqlSchemaName}
+                        onChange={(e) => setSqlSchemaName(e.target.value)}
+                        placeholder="Enter a name for this schema"
+                        required={importFormat === 'sql'}
+                      />
+                    </div>
+
+                    <div className="grid gap-2">
+                      <label className="text-sm font-medium">
+                        Schema Description
+                      </label>
+                      <Textarea
+                        value={sqlSchemaDescription}
+                        onChange={(e) => setSqlSchemaDescription(e.target.value)}
+                        placeholder="Describe this schema (optional)"
+                        rows={2}
+                      />
+                    </div>
+                  </>
+                )}
+
+                <div className="grid gap-2">
+                  <label className="text-sm font-medium">
+                    Schema File ({importFormat === 'json' ? 'JSON' : 'SQL'})
                   </label>
                   <Input
                     ref={fileInputRef}
                     type="file"
-                    accept=".json"
+                    accept={importFormat === 'json' ? '.json' : '.sql'}
                     onChange={handleFileChange}
                     className="cursor-pointer"
                   />
                   <p className="text-xs text-muted-foreground">
-                    The file should contain a valid schema definition in JSON format.
+                    {importFormat === 'json'
+                      ? 'The file should contain a valid schema definition in JSON format.'
+                      : 'The file should contain valid SQL DDL statements (CREATE TABLE).'}
                   </p>
                 </div>
               </div>
@@ -290,7 +386,7 @@ export default function SchemasPage() {
                 <Button
                   type="button"
                   onClick={handleImport}
-                  disabled={importLoading || !importFile}
+                  disabled={importLoading || !importFile || (importFormat === 'sql' && !sqlSchemaName)}
                 >
                   {importLoading ? (
                     <>

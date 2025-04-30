@@ -57,6 +57,7 @@ func main() {
 		apiGroup.GET("/schemas/:id", api.HandleGetSchema)
 		apiGroup.POST("/schemas", api.HandleCreateSchema)
 		apiGroup.POST("/schemas/import", api.HandleImportSchema)
+		apiGroup.POST("/schemas/import-sql", api.HandleImportSQLSchema)
 
 		// History endpoint - retrieve query history
 		apiGroup.GET("/history", func(c *gin.Context) {

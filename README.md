@@ -35,7 +35,7 @@ sql-llm/
 3. **Database**: SQL database (PostgreSQL)
 4. **LLM Integration**: Connect to an LLM API (like OpenAI) for natural language understanding
 5. **SQL Generation**: Convert natural language to SQL queries
-6. **Schema Management**: Store, import, and utilize database schema information
+6. **Schema Management**: Store, import (JSON and SQL), and utilize database schema information
 
 ## Implementation Plan
 
@@ -47,7 +47,7 @@ sql-llm/
 ### Phase 2: Schema Management
 - Create schema parsing and storage
 - Implement schema metadata API
-- Add schema import functionality
+- Add schema import functionality (JSON and SQL)
 
 ### Phase 3: LLM Integration
 - Connect to LLM API
@@ -64,6 +64,27 @@ sql-llm/
 - Implement error handling
 - Add authentication (optional)
 - Comprehensive testing
+
+## Schema Import
+
+The application supports importing database schemas from both JSON and SQL files:
+
+### JSON Schema Import
+
+A sample JSON schema file is provided in `docs/sample_schema.json` that you can use as a template.
+
+### SQL Schema Import
+
+You can also import schemas directly from SQL DDL (Data Definition Language) statements. The application supports the following SQL dialects:
+
+- PostgreSQL
+- MySQL
+- SQLite
+
+Sample SQL schema files are provided in the `docs/samples` directory:
+- `docs/samples/postgresql_sample.sql`
+- `docs/samples/mysql_sample.sql`
+- `docs/samples/sqlite_sample.sql`
 
 ## Getting Started
 

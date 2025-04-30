@@ -61,11 +61,16 @@ This is the backend API for the SQL-LLM project, a natural language to SQL AI ag
 - `GET /api/schemas`: Get all available database schemas
 - `POST /api/schemas`: Create a new database schema
 - `POST /api/schemas/import`: Import a schema from a JSON file
+- `POST /api/schemas/import-sql`: Import a schema from a SQL file
 - `GET /api/history`: Get query history
 
 ## Schema Import
 
-The application supports importing database schemas from JSON files. A sample schema file is provided in `docs/sample_schema.json` that you can use as a template. The schema file should have the following structure:
+The application supports importing database schemas from both JSON and SQL files:
+
+### JSON Schema Import
+
+A sample JSON schema file is provided in `docs/sample_schema.json` that you can use as a template. The schema file should have the following structure:
 
 ```json
 {
@@ -89,3 +94,24 @@ The application supports importing database schemas from JSON files. A sample sc
   ]
 }
 ```
+
+### SQL Schema Import
+
+You can also import schemas directly from SQL DDL (Data Definition Language) statements. The application supports the following SQL dialects:
+
+- PostgreSQL
+- MySQL
+- SQLite
+
+Sample SQL schema files are provided in the `docs/samples` directory:
+- `docs/samples/postgresql_sample.sql`
+- `docs/samples/mysql_sample.sql`
+- `docs/samples/sqlite_sample.sql`
+
+When importing from SQL, you'll need to provide:
+1. The SQL file containing CREATE TABLE statements
+2. A name for the schema
+3. An optional description
+4. The SQL dialect used in the file
+
+The SQL parser will extract table and column definitions, including primary keys, foreign keys, and data types.

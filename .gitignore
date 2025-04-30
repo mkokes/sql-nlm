@@ -10,6 +10,7 @@ frontend/.yarn/*
 !frontend/.yarn/releases
 !frontend/.yarn/sdks
 !frontend/.yarn/versions
+frontend/.yarn/install-state.gz
 frontend/.pnp.*
 
 # Testing

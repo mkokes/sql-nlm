@@ -1,0 +1,16 @@
+# Ignore artifacts
+.next/
+out/
+build/
+dist/
+coverage/
+node_modules/
+public/
+.yarn/
+
+# Ignore files
+*.log
+*.lock
+.DS_Store
+.env*
+!.env.example

@@ -34,6 +34,7 @@ backend/go.work
 
 # Environment variables
 .env
+.env.local
 frontend/.env
 frontend/.env.local
 frontend/.env.development.local

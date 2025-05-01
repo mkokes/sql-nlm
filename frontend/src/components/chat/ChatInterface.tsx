@@ -14,19 +14,22 @@ import {
 } from '@/components/ui/select';
 import { MessageSquare, Send, Code } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { fetchSchemas as apiFetchSchemas } from '@/lib/api';
 
 type Message = {
   id: string;
   role: 'user' | 'assistant';
   content: string;
   sql?: string;
-  results?: any[];
+  results?: Array<Record<string, unknown>>;
 };
 
 type Schema = {
   ID: number;
   name: string;
-  Description: string;
+  description: string;
+  CreatedAt?: string;
+  UpdatedAt?: string;
 };
 
 export default function ChatInterface() {
@@ -37,7 +40,6 @@ export default function ChatInterface() {
   const [selectedSchema, setSelectedSchema] = useState<number | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
-
   // Ensure selectedSchema is set when schemas are loaded
   useEffect(() => {
     if (schemas.length > 0 && selectedSchema === null) {
@@ -48,7 +50,7 @@ export default function ChatInterface() {
   useEffect(() => {
     const fetchSchemas = async () => {
       try {
-        const response = await axios.get('/api/schemas');
+        const response = await apiFetchSchemas();
         setSchemas(response.data);
         if (response.data.length > 0) {
           setSelectedSchema(response.data[0].ID);
